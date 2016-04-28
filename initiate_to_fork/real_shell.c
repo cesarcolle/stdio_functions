@@ -53,7 +53,7 @@ start_with (const char *id, char *ptr)
 
 
 char *
-affic_environ_several (const char *values)
+affic_environ_several (char *values)
 {
   while (*environ)
     {
@@ -116,11 +116,13 @@ int not_opt(char * ptr){
 
 
 char * find_path(char * file){
-    char * PATH = affic_environ_several("$PATH");
+    char * PATH = affic_environ_several("PATH");
     char * tok = PATH;
     int size = strlen(file);
     char * tmp;
-    while ((tok = strtok(tok, ":")) != NULL){
+    while ((tok = strtok(PATH, ":")) != NULL){
+        printf("tok : %s\n", tok);
+        tok = strrchr(tok, '=') +1 ;
         tmp = calloc(strlen(tok)+ size + 1, sizeof(char));
         strcat(tmp, tok);
         strcat(tmp, "/");
@@ -129,6 +131,7 @@ char * find_path(char * file){
             return tmp;   
         }
         free(tmp);
+        PATH = NULL;
     }
     ERROR(0);
     return NULL;
@@ -136,7 +139,7 @@ char * find_path(char * file){
 /**
 * We assume the cd commande is on two part : cd + the path
 * @command : the command given by user
-*@buffer the path buffer update.
+* @buffer the path buffer update.
 **/
 int manage_cd(char * command, char * buffer){
     char * tok = command;
@@ -150,8 +153,12 @@ int manage_cd(char * command, char * buffer){
                     ERROR(0);
                     exit(1);
                 }
-
-                strcpy(buffer, tok);
+                int i = 0;
+                while (i < strlen(tok)){
+                
+                    *(buffer+i) = tok[i];
+                    i++;
+                }
                 printf("buffer %s : %s\n", buffer, __FUNCTION__);
                 return 1;
             }
@@ -167,46 +174,98 @@ int manage_cd(char * command, char * buffer){
     return 0;
 }
 
+char * new_command(char * command, char *path){
+    char * tmp = calloc(strlen(command) + strlen(path), sizeof(char));
+    char * tok;
+    char appear= 0;
+    while ((tok = strtok(command, " ")) != NULL)
+    {
+        if (tok[0] != '-'){
+            strcat(tmp, path);
+            strcat(tmp, tok);
+            appear = 1;
+        }
+        else{
+            strcat (tmp, tok);
+        }
+        command = NULL;
+    }
+    if (!appear) {strcat(tmp, path); }
+    return tmp;
+}
+
+char** str_split(char* a_str, const char a_delim)
+{
+    char** result    = 0;
+    size_t count     = 0;
+    char* tmp        = a_str;
+    char* last_comma = 0;
+    char delim[2];
+    delim[0] = a_delim;
+    delim[1] = 0;
+
+    /* Count how many elements will be extracted. */
+    while (*tmp)
+    {
+        if (a_delim == *tmp)
+        {
+            count++;
+            last_comma = tmp;
+        }
+        tmp++;
+    }
+
+    /* Add space for trailing token. */
+    count += last_comma < (a_str + strlen(a_str) - 1);
+
+    /* Add space for terminating null string so caller
+       knows where the list of returned strings ends. */
+    count++;
+
+    result = malloc(sizeof(char*) * count);
+
+    if (result)
+    {
+        size_t idx  = 0;
+        char* token = strtok(a_str, delim);
+
+        while (token)
+        {
+            assert(idx < count);
+            *(result + idx++) = strdup(token);
+            token = strtok(0, delim);
+        }
+        assert(idx == count - 1);
+        *(result + idx) = 0;
+    }
+
+    return result;
+}
 
 
 
-
-void shell (){
+void shell (char * path, char * command){
     char c;
     int i = 0;
     int status;
-    char * command= calloc(MAX, sizeof(char));
-    char *path = calloc(MAX, sizeof(char));
     reset(command);
-    reset_path(path);
     char * tok;
+    
     while ( ((c = getchar()) != EOF) && i < MAX){
         if (c == '\n'){
-            printf("COMMAND before fork : %s\n", command);
-            printf("path : %p\n");
-            switch(fork()){
-                case 0:
-                    if (!manage_cd(command, path)){
-                        printf("not manage cd \n");
-                        tok = command;
-                        if ((tok = strtok(tok, " ")) != NULL){
-                            char * tmp = find_path(tok);
-                            printf("PATH : %s\n", tmp);
-                        }
-
+            if (! manage_cd(command, path)){
+                int pid = fork();
+                if (pid == 0){
+                    if ( (tok = strtok(command, " ")) != NULL){
+                        execv(find_path(tok), str_split(new_command(command, path), ' ') );
                     }
-                    printf("fils : paths = %s\n", path);
-                    return;
-                    break;
-                default:
-                    printf("pere waiting ...\n");
+                }
+                else{
                     wait(&status);
-                    printf("Pere ; path = %s\n", path);
-                    printf("RESET !\n");
-                    reset(command);
-                    i= 0;
-                    break;
+                }
             }
+            reset(command);
+            i =0;
         }
         else{
             printf("command : %s\n", command);
@@ -224,6 +283,9 @@ void shell (){
 int
 main (int argc, char *argv[])
 {
-    shell();
+    char * command = calloc(MAX, sizeof(char));
+    char * path = calloc(MAX, sizeof(char));
+
+    shell(path, command);
     return 0;
 }
