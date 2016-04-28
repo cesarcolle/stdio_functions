@@ -1,0 +1,57 @@
+DIR_SRC= src/
+DIR_INCLUDE= include/
+DIR_OBJ= obj/
+
+
+OBJ_CP= $(DIR_OBJ)main_cp.o $(DIR_OBJ)my_cp.o $(DIR_OBJ)my_cp_recc.o
+OBJ_LS=$(DIR_OBJ)main_ls.o $(DIR_OBJ)my_ls.o
+OBJ_ENV= $(DIR_OBJ)main_env.o $(DIR_OBJ)my_printenv.o
+OBJ_CPREC=$(DIR_OBJ)main_cp_recc.o $(DIR_OBJ)my_cp_recc.o $(DIR_OBJ)my_cp.o
+
+
+
+CC=gcc
+FLAG=-Wall -std=c99
+
+res_ls:$(OBJ_LS)
+	gcc $(FLAG) $(OBJ_LS) -o res_ls.exe
+
+res_cp:$(OBJ_CP)
+	gcc $(FLAG) $(OBJ_CP) -o res_cp.exe
+
+res_env:$(OBJ_ENV)
+	gcc $(FLAG) $(OBJ_ENV) -o res_env.exe
+
+res_cp_recc:$(OBJ_CPREC)
+	gcc $(FLAG) $(OBJ_CPREC) -o res_cp_recc.exe
+
+
+$(DIR_OBJ)main_cp.o:$(DIR_INCLUDE)my_cp.h $(DIR_OBJ)my_cp.o
+	$(CC) $(FLAG) $(DIR_SRC)main_cp.c -o $@ -c
+	
+$(DIR_OBJ)main_ls.o:$(DIR_INCLUDE)my_ls.h
+	$(CC) $(FLAG) $(DIR_SRC)main_ls.c -o $@ -c
+
+$(DIR_OBJ)main_env.o:$(DIR_INCLUDE)my_printenv.h
+	$(CC) $(FLAG) $(DIR_SRC)main_env.c -o $@ -c
+
+$(DIR_OBJ)main_cp_recc.o:
+	$(CC) $(FLAG) $(DIR_SRC)main_cp_recc.c -o $@ -c
+	
+$(DIR_OBJ)my_cp.o:$(DIR_SRC)my_cp.c
+	$(CC) $(FLAG) $(DIR_SRC)my_cp.c -o $@ -c
+
+$(DIR_OBJ)my_cp_recc.o:$(DIR_SRC)my_cp_recc.c
+	$(CC) $(FLAG) $(DIR_SRC)my_cp_recc.c -o $@ -c
+
+$(DIR_OBJ)my_ls.o:$(DIR_SRC)my_ls.c
+	$(CC) $(FLAG) $(DIR_SRC)my_ls.c -o $@ -c
+
+$(DIR_OBJ)my_printenv.o:$(DIR_INCLUDE)my_printenv.h
+	$(CC) $(FLAG) $(DIR_SRC)my_printenv.c -o $@ -c
+
+clean:
+	rm ./obj/*.o
+	rm ./src/*~
+	rm *.exe
+	

@@ -1,0 +1,6 @@
+#ifndef MY_LS
+#define MY_LS
+
+void information_file(char *);
+
+#endif
