@@ -1,0 +1,16 @@
+**
+*Recreate a shell interface. with posix function. and parsing command given by user.
+*TODO : clean with the environ element in other directory
+*
+**/
+int file_exist(char * path){
+    int fdin;
+    if ((fdin=open(path,O_RDONLY))==-1){
+      printf("false\n");
+      return 0;
+    }
+    printf("true\n");
+    return 1;
+}
+
+
