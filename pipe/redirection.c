@@ -33,6 +33,7 @@ void close_pipe(int tab[2]){
     close(tab[1]);
 }
 
+
 void pipe_process(){
     int pipe_1[2];
     if (pipe(pipe_1) < 0){

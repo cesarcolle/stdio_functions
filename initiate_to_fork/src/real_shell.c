@@ -1,5 +1,4 @@
 #include <string.h>
-#include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -12,7 +11,6 @@
 #include <sys/stat.h>
 #include "../erreur.h"
 #define MAX 50
-extern char **environ;
 
 /**
 *Recreate a shell interface. with posix function. and parsing command given by user.
@@ -34,51 +32,7 @@ int file_exist(char * path){
 /*
 *Decide if id start with ptr value
 **/
-int
-start_with (const char *id, char *ptr)
-{
-  if (strlen (id) < strlen (ptr))
-    {
-      return 0;
-    }
-  while (*ptr)
-    {
-      if (*ptr++ != *id++)
-	{
-	  return 0;
-	}
-    }
-  return 1;
-}
 
-
-char *
-affic_environ_several (char *values)
-{
-  while (*environ)
-    {
-      if (start_with (*environ, values))
-	{
-	  
-	  return *environ;
-	}
-      environ++;
-    }
-    fprintf(stderr, "%s is not a part of Environ\n", values);
-    exit(0);
-}
-
-
-
-
-int isRep(char *rep){
-  struct stat sbuf;
-
-  if (stat(rep,&sbuf)>=0){
-      return S_ISDIR(sbuf.st_mode);
-  }
-  return 0;
-}
 
 
 
@@ -109,34 +63,7 @@ int not_opt(char * ptr){
     }
     return ptr[0] == '-';
 }
-/**
-*find in the $PATH variable if the @file given by user exist.
-*
-**/
 
-
-char * find_path(char * file){
-    char * PATH = affic_environ_several("PATH");
-    PATH = PATH + strlen("PATH=");
-    char * tok = PATH;
-    int size = strlen(file);
-    char * tmp;    
-    while ((tok = strtok(tok, ":")) != NULL){
-        tmp = calloc(strlen(tok)+ size + 1, sizeof(char));
-        strcat(tmp, tok);
-        strcat(tmp, "/");
-        strcat(tmp, file);
-        if (file_exist(tmp)){
-            return tmp;  
-            } 
-        memset(tmp, 0, strlen(tmp));
-        tok = NULL;
-        
-    }
-    ERROR(0);
-    fprintf(stderr, "not the file\n");
-    exit(1);
-}
 /**
 * We assume the cd commande is on two part : cd + the path
 * @command : the command given by user
@@ -145,9 +72,7 @@ char * find_path(char * file){
 int manage_cd(char * command, char * buffer){
     char * copy = calloc(strlen(command), sizeof(char));
     strcpy(copy, command);
-    
     char * tok = copy;
-    printf("command : %s\n", command);
     if ((tok = strtok(tok, " ")) != NULL){
         if ( strcmp (tok, "cd") == 0){
             tok = NULL;
@@ -201,56 +126,6 @@ void new_command(char ** command, char *path){
     
 }
 
-char** str_split(char* a_str, const char a_delim)
-{
-    char** result    = 0;
-    size_t count     = 0;
-    char* tmp        = a_str;
-    char* last_comma = 0;
-    char delim[2];
-    delim[0] = a_delim;
-    delim[1] = 0;
-
-    /* Count how many elements will be extracted. */
-    while (*tmp)
-    {
-        if (a_delim == *tmp)
-        {
-            count++;
-            last_comma = tmp;
-        }
-        tmp++;
-    }
-
-    /* Add space for trailing token. */
-    count += last_comma < (a_str + strlen(a_str) - 1);
-
-    /* Add space for terminating null string so caller
-       knows where the list of returned strings ends. */
-    count++;
-
-    result = malloc(sizeof(char*) * count +1);
-
-    if (result)
-    {
-        size_t idx  = 0;
-        char* token = strtok(a_str, delim);
-
-        while (token)
-        {
-            assert(idx < count);
-            *(result + idx++) = strdup(token);
-            token = strtok(0, delim);
-        }
-        assert(idx == count - 1);
-        *(result + idx) = 0;
-    }
-    *(result + count) = NULL;
-    return result;
-}
-
-
-
 
 void shell (char * path, char * command){
     char c;
@@ -258,18 +133,14 @@ void shell (char * path, char * command){
     int status;
     reset(command);
     char * tok;
-    
     while ( ((c = getchar()) != EOF) && i < MAX){
         if (c == '\n' && strlen(command) > 1){
             if (! manage_cd(command, path)){
-                printf("before fork : %s\n", command);
                 int pid = fork();
                 if (pid == 0){
                         char ** tab = str_split(command, ' ');
                         printf("\n");
-                        new_command(tab, path);
-                        printf("tab[0] = %s\n", tab[0]);
-                        
+                        new_command(tab, path);                        
                         char * cmd = find_path(tab[0]);
                         tab[0] = strdup(cmd);
                         strcpy(tab[0], cmd);

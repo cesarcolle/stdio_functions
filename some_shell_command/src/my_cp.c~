@@ -78,19 +78,7 @@ int isRep(char *rep){
   return 0;
 }
 
-/**
-*write the @buff to @path file . 
-**/
-void write_file(char * buffer, char * path, int size){
-    int fdout;
-    printf("Try to open : %s\n", path);
-    if ((fdout=open(path, O_WRONLY|O_CREAT|O_TRUNC, USER_PERM))==-1){
-          perror("erreur open fdout \n");
-          return;
-        }
-        printf("ecriture ... %p\n", buffer);
-        write(fdout,buffer, size);
-}
+
 
 
 /**
