@@ -1,8 +1,8 @@
 
 res:
-	gcc -Wall station.c -o station.exe
-	gcc -Wall ring.c
+	gcc -Wall station.c -o station.exe 
+	gcc -Wall ring.c 
 	./a.out
-	
-make:
+	 
+clean:
 	rm *.exe *.out *~

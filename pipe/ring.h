@@ -1,1 +1,7 @@
-/bin/ /boot/ /cdrom/ /dev/ /etc/ /home/ /lib/ /lost+found/ /media/ /mnt/ /opt/ /proc/ /root/ /run/ /sbin/ /srv/ /sys/ /tmp/ /usr/ /var/
+#ifndef RING
+#define RING
+
+#define LENGTH_MSG 50
+#define MAX_MACHINE 50
+
+#endif
