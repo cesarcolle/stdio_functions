@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <string.h>
 
-#include "ring.h"
+#include "../include/ring.h"
 
 #define N 5
 #define MAX_PIPE 10
@@ -64,7 +64,6 @@ ring (int n)
   char str[3];
 int other;
   int i;
-  int pid = getpid ();
   int pip[MAX_PIPE][2];
   for (i = 0; i < n; i++)
     {
@@ -77,7 +76,6 @@ int other;
 	case 0:
 	other = (i - 1) % (n);
 	  dup2 (pip[i][1], 1);
-	  fprintf(stderr, "deuxieme redirection :i = %d, modulo :  %d\n",i, (i - 1) % (n));
 	  if (i == 0)other = n-1;
 	  dup2 (pip[other][0], 0);
 	  sprintf (str, "%d", i);

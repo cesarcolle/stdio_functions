@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-/* BUT : créé une chaine de structure chainé, elles seront reliés chacunes par un pointeur qui pointera sur une autre structure,
-
-STRUCT 1.NEXT ----> STRUCT 2 ;  STRUCT 2.NEXT -----> STRUCT 3, ect ....
-
-ça permet de faire une structure de donnée plus intelligente */
+/**
+* BUT : créé une chaine de structure chainé, elles seront reliés chacunes par un pointeur qui pointera sur une autre structure,
+* STRUCT 1.NEXT ----> STRUCT 2 ;  STRUCT 2.NEXT -----> STRUCT 3, ect ....
+* permet une allocation dynamique moins couteuse en réallocation.
+* peut etre associé a une pile / file 
+ */
 
 typedef struct caractere
 {
