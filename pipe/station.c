@@ -5,16 +5,23 @@
 #include "token.h"
 #include "station.h"
 #define LENGTH_MSG 50
-#define OUT(N) "##N = MAX_MACHINE "
+#define OUT(N) N ##=##MAX_MACHINE 
 
 void change(struct token * ptr_token, int id){
     char c;
     char cmd[LENGTH_MSG];
     int i =0;
-    int state = 1;
+    FILE * fout = fopen("/dev/tty", "a+");
     fprintf(stderr, "quelle station ?"OUT(MAX_MACHINE));
-
+    fscanf(fout, "%s", cmd);
+    fclose(fout);
     ptr_token->recepteur =  atoi(cmd);
+
+    fout = fopen("/dev/tty", "a+");
+    memset(cmd, 0, LENGTH_MSG -1);
+    fprintf(stderr, "message : \n");
+    fscanf(fout, "%s", cmd);
+    strcpy(ptr_token->msg, cmd);
     ptr_token->expediteur = id;
     
 
@@ -29,14 +36,14 @@ void reception_(struct token * ptr_token, int id){
     FILE * fin;
       switch(ptr_token->status){
         case FREE:
-            fprintf(stderr, "la station envoie un message? yes / no\n");
-            fout = freopen("/dev/tty", "r", stdout);
-            //fscanf(fout, "%s", cmd);
-            scanf("%s", cmd);
+            fprintf(stderr, "la station doit-elle envoyer un message? yes / no\n");
+            fout = fopen("/dev/tty", "a+");
+            fscanf(fout, "%s", cmd);
             fclose(fout);  
             
             if (!strcmp(cmd, "yes")){
                 fprintf(stderr, "you say yes !\n");
+                change(ptr_token, id);
             }
         break;
         
@@ -72,9 +79,8 @@ main (int argc, char *argv[])
   while (1)
     {
       count = read (0, &reception, SIZE_TOKEN);
-      fprintf (stderr, "fils num %s a recu : %s \n", argv[1], reception.msg);
+      fprintf(stderr, "station : %d recoit : %s de %d\n", id, reception.msg, reception.expediteur);
       if (reception.recepteur == id){
-            fprintf(stderr, "package reçu sur fils : %d\n", id);
             reception_(&reception, id);
         }
 

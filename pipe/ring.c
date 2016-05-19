@@ -62,11 +62,10 @@ void
 ring (int n)
 {
   char str[3];
-
+int other;
   int i;
   int pid = getpid ();
   int pip[MAX_PIPE][2];
-  printf ("ok\n");
   for (i = 0; i < n; i++)
     {
       pipe (pip[i]);
@@ -76,11 +75,13 @@ ring (int n)
       switch (fork ())
 	{
 	case 0:
+	other = (i - 1) % (n);
 	  dup2 (pip[i][1], 1);
-	  dup2 (pip[(i - 1) % n][0], 0);
+	  fprintf(stderr, "deuxieme redirection :i = %d, modulo :  %d\n",i, (i - 1) % (n));
+	  if (i == 0)other = n-1;
+	  dup2 (pip[other][0], 0);
 	  sprintf (str, "%d", i);
 	  close_all (pip);
-	  fprintf (stderr, "fils : %d %s\n", i, str);
 	  execl ("./station.exe", "./station.exe", str, NULL);
 	  perror ("erreur exec\n");
 	  break;
