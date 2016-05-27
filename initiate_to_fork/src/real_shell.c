@@ -9,7 +9,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include "../erreur.h"
+
 #define MAX 50
 
 /**
@@ -119,7 +119,6 @@ void new_command(char ** command, char *path){
             return;
         }
         i++;
-        printf("%s\n", *command);
         command++;
     }
     command[i-1] = strdup(path);
@@ -139,7 +138,6 @@ void shell (char * path, char * command){
                 int pid = fork();
                 if (pid == 0){
                         char ** tab = str_split(command, ' ');
-                        printf("\n");
                         new_command(tab, path);                        
                         char * cmd = find_path(tab[0]);
                         tab[0] = strdup(cmd);
@@ -170,8 +168,16 @@ main (int argc, char *argv[])
 {
     char * command = calloc(MAX, sizeof(char));
     char * path = calloc(MAX, sizeof(char));
-
-    shell(path, command);
+    while (1){
+        switch(fork()){
+            case 0:
+                shell(path, command);
+                break;
+            default:
+                wait(NULL);
+                break;
+        }
+    }
     free(command);
     free(path);
     return 0;

@@ -60,7 +60,6 @@ int open_and_read(char * path, char * dest){
     }
 	char * res = calloc(MAX, sizeof(char));
     #ifdef DEBUG
-    printf("j'alloue : %p'\n", res);
 	#endif 
 	char buff[MAX];
 	int n;
@@ -76,11 +75,9 @@ int open_and_read(char * path, char * dest){
 	#endif 
 	write_file(res,dest,  total);
     #ifdef DEBUG
-    printf("de desalloue  : %p'\n", res);
 	#endif 
 	/*bugged : free corruption ==> memory leek...*/
 	//free(res);
-	printf("apres free\n");
 	return 1;
 }
 
