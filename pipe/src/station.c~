@@ -96,7 +96,7 @@ main (int argc, char *argv[])
       reception.affic(&reception);
       
       reception_(&reception, id);
-        sleep (0.5);
+        sleep (1);
         write (1, &reception, count);
     }
   return 0;

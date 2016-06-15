@@ -72,6 +72,8 @@ pipe_process ()
       close_pipe (pipe_2);
       execlp ("grep", "grep", "gedit", NULL);
     }
+
+
   if (!fork ())
     {
 

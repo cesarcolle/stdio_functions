@@ -7,68 +7,74 @@
 #include <assert.h>
 #include <dirent.h>
 
-void info_fork(){
-    printf("pid = %d\n", getpid());
-    printf("pere = %d \n", getppid());
+void
+info_fork ()
+{
+  printf ("pid = %d\n", getpid ());
+  printf ("pere = %d \n", getppid ());
 }
 
 
 
-void write_fork(){
-    int dentry;
-    char * current = "../td3/";
-    FILE * f = fopen("ici.txt", "a");
-    DIR * dirp = opendir(current);
+void
+write_fork ()
+{
+  int dentry;
+  char *current = "../td3/";
+  FILE *f = fopen ("ici.txt", "a");
+  DIR *dirp = opendir (".");
+  switch (fork ())
+    {
+    case 0:
+      fputs ("toto ", f);
+      dentry = dirfd (dirp);
+      info_fork ();
+      break;
 
-    switch(fork()){
-        case 0:
-            printf("je suis le fils\n");
-            fputs("toto ", f);
-            dentry = dirfd(dirp);
-            printf("fils : dentry= %d\n", dentry);
-            info_fork();
-            break;
-            
-        default:
-            printf("je suis le pere\n");
-            fputs("tata ", f);
-            dentry = dirfd(dirp);
-            printf("pere : dentry= %d\n", dentry);
-            info_fork();
-            break;
+    default:
+      fputs ("tata ", f);
+      dentry = dirfd (dirp);
+      info_fork ();
+      break;
     }
-    sleep(3);
+  sleep (3);
 
 }
 
 
-void multiple_fork() {
-    int occ = 0;
-    pid_t pid;
-    int status;
-    int N = 10;
-    while ( ((pid = fork()) != 0) && (occ++ < 9)){
-    
+void
+multiple_fork ()
+{
+  int occ = 0;
+  pid_t pid;
+  int status;
+  int N = 10;
+  while (((pid = fork ()) != 0) && (occ++ < 9))
+    {
     }
-    
-    while (N--){
-         printf("%d\n", occ);
+
+  while (N--)
+    {
+      printf ("%d\n", occ);
     }
-    wait(&status);
+  wait (&status);
 }
 
-void exec (){
-    printf("stdout :%p\n", stdout);
-    switch(fork()){
-        case 0:
-            printf("fils: stdout: %p, %d\n", stdout, getpid());
-            execlp("./affic_pid.exe","affic_pid.exe", NULL);
-            break;
-        default:
-            printf("je suis le père\n");
-            break;
-        
-    
+void
+exec ()
+{
+  printf ("stdout :%p\n", stdout);
+  switch (fork ())
+    {
+    case 0:
+      printf ("fils: stdout: %p, %d\n", stdout, getpid ());
+      execlp ("./affic_pid.exe", "affic_pid.exe", NULL);
+      break;
+    default:
+      printf ("je suis le père\n");
+      break;
+
+
     }
 
 
@@ -81,8 +87,7 @@ void exec (){
 int
 main (int argc, char *argv[])
 {
-    exec();
-    return 0;
+
+  write_fork ();
+  return 0;
 }
-
-

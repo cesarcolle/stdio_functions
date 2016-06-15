@@ -11,8 +11,6 @@ extern char **environ;
 *version : 1.0
 */
 
-
-
 /*
 *Decide if id start with ptr value
 **/

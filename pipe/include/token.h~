@@ -15,6 +15,6 @@ struct token
     int expediteur;
     int recepteur;
     char msg[LENGTH_MSG];
-    void (*affic)(struct token *);
+    char * (*affic)(struct token *);
 };
 #endif

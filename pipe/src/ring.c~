@@ -14,6 +14,9 @@
 #define MAX_PIPE 10
 
 
+char* affic(struct token * ptr_token){
+    printf("bonjour\n");
+}
 
 
 void

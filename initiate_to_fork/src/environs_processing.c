@@ -54,29 +54,29 @@ environ_several (const char *values)
 **/
 
 
-char * find_path(char * file){
-    char * PATH = affic_environ_several("PATH");
-    PATH = PATH + strlen("PATH=");
-    char * tok = PATH;
-    int size = strlen(file);
-    char * tmp;    
-    while ((tok = strtok(tok, ":")) != NULL){
-        tmp = calloc(strlen(tok)+ size + 1, sizeof(char));
-        strcat(tmp, tok);
-        strcat(tmp, "/");
-        strcat(tmp, file);
-        if (file_exist(tmp)){
-            return tmp;  
-            } 
-        memset(tmp, 0, strlen(tmp));
-        tok = NULL;
-        
+char *
+find_path (char *file)
+{
+  char *PATH = affic_environ_several ("PATH");
+  PATH = PATH + strlen ("PATH=");
+  char *tok = PATH;
+  int size = strlen (file);
+  char *tmp;
+  while ((tok = strtok (tok, ":")) != NULL)
+    {
+      tmp = calloc (strlen (tok) + size + 1, sizeof (char));
+      strcat (tmp, tok);
+      strcat (tmp, "/");
+      strcat (tmp, file);
+      if (file_exist (tmp))
+	{
+	  return tmp;
+	}
+      memset (tmp, 0, strlen (tmp));
+      tok = NULL;
+
     }
-    ERROR(0);
-    fprintf(stderr, "not the file\n");
-    exit(1);
+  ERROR (0);
+  fprintf (stderr, "not the file\n");
+  exit (1);
 }
-
-
-
-

@@ -10,7 +10,7 @@ shell.exe:$(OBJ)
 	gcc $(FLAGS) $(OBJ) $(DOBJ)/main.o -o shell.exe
 
 $(DOBJ)/file_processing.o:
-	gcc $(FLAGS) $(DSRC)/file_processing.c -o $(DOBJ)/file_processing.o
+	gcc $(FLAGS) $(DSRC)/file_processing.c -o 
 
 $(DOBJ)/shell.o: $(DOBJ)/file_processing.o $(DOBJ)/environs_processing.o $(DOBJ)/parsing.o $(DINC)/shell.h
 	gcc $(FLAGS) $(DSRC)/shell.o
