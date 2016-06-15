@@ -1,7 +1,6 @@
 DOBJ=obj
 DINC=inc
 DSRC=src
-
 FLAGS=-Wall
 OBJ=$(DOBJ)/file_processing.o $(DOBJ)/shell.o $(DOBJ)/environs_processing.o $(DOBJ)/parsing.o
 
@@ -26,7 +25,6 @@ create_library:
 
 open:
 	gedit ./$(DSRC)/* ./$(DINC)/* makefile 
-
 
 clean:
 	rm -f *.out

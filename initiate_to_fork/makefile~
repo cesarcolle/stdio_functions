@@ -1,7 +1,6 @@
 DOBJ=obj
 DINC=inc
 DSRC=src
-
 FLAGS=-Wall
 OBJ=$(DOBJ)/file_processing.o $(DOBJ)/shell.o $(DOBJ)/environs_processing.o $(DOBJ)/parsing.o
 
@@ -10,7 +9,7 @@ shell.exe:$(OBJ)
 	gcc $(FLAGS) $(OBJ) $(DOBJ)/main.o -o shell.exe
 
 $(DOBJ)/file_processing.o:
-	gcc $(FLAGS) $(DSRC)/file_processing.c -o 
+	gcc $(FLAGS) $(DSRC)/file_processing.c -o $(DOBJ)/file_processing.o
 
 $(DOBJ)/shell.o: $(DOBJ)/file_processing.o $(DOBJ)/environs_processing.o $(DOBJ)/parsing.o $(DINC)/shell.h
 	gcc $(FLAGS) $(DSRC)/shell.o
@@ -26,6 +25,16 @@ create_library:
 
 open:
 	gedit ./$(DSRC)/* ./$(DINC)/* makefile 
+
+OBJ= file_processing.o environs_processing.o real_shell.o
+
+
+shell:$(OBJ)
+	gcc -Wall $(OBJ) -o shell.exe
+
+file_processing.o:
+	gcc -Wall
+
 
 
 clean:

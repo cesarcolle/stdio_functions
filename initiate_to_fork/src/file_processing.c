@@ -84,30 +84,25 @@ open_and_read (char *path, char *dest)
       close (fdin);
       return -1;
     }
-  char *res = calloc (MAX, sizeof (char));
-#ifdef DEBUG
-  printf ("j'alloue : %p'\n", res);
-#endif
-  char buff[MAX];
-  int n;
-  int total = 0;
-  while ((n = read (fdin, buff, MAX)) != 0)
-    {
-      total += n;
-      if (!total % MAX)
-	{
-	  res = realloc (res, total + MAX);
+	char * res = calloc(MAX, sizeof(char));
+    #ifdef DEBUG
+	#endif 
+	char buff[MAX];
+	int n;
+	int total = 0;
+	while ((n = read(fdin, buff, MAX))!= 0){
+		total+=n;
+		if (!total%MAXBUFF){
+			res = realloc(res, total+MAXBUFF);
+		}
+		strcat(res, buff);
 	}
-      strcat (res, buff);
-    }
-#ifdef DEBUG
-#endif
-  write_file (res, dest, total);
-#ifdef DEBUG
-  printf ("de desalloue  : %p'\n", res);
-#endif
-  /*bugged : free corruption ==> memory leek... */
-  //free(res);
-  printf ("apres free\n");
-  return 1;
+		#ifdef DEBUG
+	#endif 
+	write_file(res,dest,  total);
+    #ifdef DEBUG
+	#endif 
+	/*bugged : free corruption ==> memory leek...*/
+	//free(res);
+	return 1;
 }
