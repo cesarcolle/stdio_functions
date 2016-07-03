@@ -4,7 +4,9 @@
 #include <sys/stat.h>
 #include <string.h>
 #include "../inc/file_processing.h"
-
+#include <sys/types.h>
+#include <fcntl.h>
+#define MAXBUFF 50
 #define USER_PERM (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
 
 /**

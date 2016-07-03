@@ -4,6 +4,8 @@
 #include <sys/stat.h>
 #include <string.h>
 #include "../inc/file_processing.h"
+#include <sys/types.h>
+#include <fcntl.h>
 
 #define USER_PERM (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
 
@@ -105,5 +107,4 @@ open_and_read (char *path, char *dest)
 	/*bugged : free corruption ==> memory leek...*/
 	//free(res);
 	return 1;
->>>>>>> c6a52c0efa7e11fa4cdf8684572a3f40194c5cca
 }

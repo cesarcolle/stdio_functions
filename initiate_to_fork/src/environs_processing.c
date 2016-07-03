@@ -52,8 +52,6 @@ environ_several (const char *values)
 *find in the $PATH variable if the @file given by user exist.
 *
 **/
-
-
 char *
 find_path (char *file)
 {

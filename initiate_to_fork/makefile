@@ -9,13 +9,13 @@ shell.exe:$(OBJ)
 	gcc $(FLAGS) $(OBJ) $(DOBJ)/main.o -o shell.exe
 
 $(DOBJ)/file_processing.o:
-	gcc $(FLAGS) $(DSRC)/file_processing.c -o $(DOBJ)/file_processing.o
+	gcc $(FLAGS) -c $(DSRC)/file_processing.c -o $(DOBJ)/file_processing.o
 
 $(DOBJ)/shell.o: $(DOBJ)/file_processing.o $(DOBJ)/environs_processing.o $(DOBJ)/parsing.o $(DINC)/shell.h
-	gcc $(FLAGS) $(DSRC)/shell.o
+	gcc $(FLAGS) -c $(DSRC)/shell.o -o $(DOBJ)/shell.o
 
 $(DOBJ)/environs_processing.o:
-	gcc $(FLAGS) $(DSRC)/environs_processing.c -o $<
+	gcc $(FLAGS) -c $(DSRC)/environs_processing.c -o $(DOBJ)/environs_processing.o
 
 $(DOBJ)/parsing.o:
 	gcc $(FLAGS) $(DSRC)/parsing.c -o $<
